@@ -16,13 +16,16 @@ function ConnectorList(
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-                <ul>
-                    {connectorList.map((item, i) => (
-                        <li key={i}>
-                            <DataTrayItem item={item} isListItem />
-                        </li>
-                    ))}
-                </ul>
+                <div className="inner">
+                    <h2>Interesting connector list</h2>
+                    <ul>
+                        {connectorList.map((item, i) => (
+                            <li key={i}>
+                                <DataTrayItem item={item} isListItem />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
 
             </ListWrapper>
         </>

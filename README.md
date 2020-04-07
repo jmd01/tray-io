@@ -10,3 +10,5 @@ An event visualiser
     - Negative coords are forced to zero
     - Either offset items x and y position to avoid bleeding out of visualiser right and bottom pane, or increase visualiser pane size to accomodate this
     - Could add lodash to handle deep object comparison for the coords shape. It would be worth doing this if the project grew
+
+- Icon for timer
