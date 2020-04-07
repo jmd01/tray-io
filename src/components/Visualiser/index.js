@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import {Pane, EventItem} from './styles'
+import Draggable from "react-draggable"
+
+import DataTrayItem from '../DataTrayItem'
+import ConnectorList from '../ConnectorList'
+
+import {Pane} from './styles'
+import {DataTrayItemWrap} from '../DataTrayItem/styles'
 
 const initItem = {
     coords: {
@@ -17,11 +23,41 @@ function Visualiser(props) {
     // Event items array populated from the "data-tray" prop
     const [dataTray, setDataTray] = useState([])
 
+    // When dragging, this stores the index of the dragged item
+    const [draggableDataTrayItemIndex, setDraggableDataTrayItemIndex] = useState(null)
+
+    // When dropped, this determines if dropped on the list panel
+    const [isDroppable, setIsDroppable] = useState(false)
+
+    // Stores the list of items dropped on the list panel
+    const [connectorList, setConnectorList] = useState([])
+
+
+    const handleDragStart = i => e => {
+        setDraggableDataTrayItemIndex(i)
+    }
+
+    const handleDragEnd = e => {
+        console.log('dragend', isDroppable)
+        if (isDroppable) {
+            setConnectorList(list => [
+                ...list,
+                dataTray[draggableDataTrayItemIndex]
+            ])
+        }
+        setDraggableDataTrayItemIndex(null)
+    }
+
+    const handleMouseEnterConnectorList = () => {
+        setIsDroppable(true)
+    }
+    const handleMouseLeaveConnectorList = () => {
+        setIsDroppable(false)
+    }
+
     // useEffect requires a simple variable to be used in the dependency list
     const dataTrayProp = props["data-tray"]
-
     useEffect(() => {
-
         // Ensure each item has a valid name, url and coords object structure
         const formatItem = (item) => {
             let xCoord
@@ -61,19 +97,34 @@ function Visualiser(props) {
             <h1>Visualiser</h1>
             <Pane>
                 {dataTray.map((item, i) => (
-                    <EventItem
+                    <Draggable
                         key={i}
-                        style={{
-                            left: item.coords.x,
-                            top: item.coords.y
-                        }}
+                        onStart={handleDragStart(i)}
+                        onStop={handleDragEnd}
+                        position={{x: 0, y: 0}} // reset position on dragend
                     >
-                        {item.connector.name}
-                        <img src={item.connector.iconURL} alt={item.connector.name} />
-                    </EventItem>
-                ))}
+                        <DataTrayItemWrap
+                            style={{
+                                left: item.coords.x,
+                                top: item.coords.y
+                            }}
+                        >
+                            {item.connector.name}
+                            <img src={item.connector.iconURL} alt={item.connector.name} />
+                        </DataTrayItemWrap>
 
+                    </Draggable>
+                ))}
+                {draggableDataTrayItemIndex &&
+                <DataTrayItem item={dataTray[draggableDataTrayItemIndex]} />
+                }
             </Pane>
+            <ConnectorList
+                handleMouseEnter={handleMouseEnterConnectorList}
+                handleMouseLeave={handleMouseLeaveConnectorList}
+                connectorList={connectorList}
+            />
+
         </>
     )
 }
