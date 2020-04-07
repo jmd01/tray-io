@@ -63,6 +63,7 @@ function Visualiser(props) {
         const formatItem = (item) => {
             let xCoord
             let yCoord
+            let itemConnector
 
             // Consider importing lodash to reduce this by a few lines
             if (typeof item === 'object' && item.hasOwnProperty('coords') && (typeof item.coords === 'object')) {
@@ -70,7 +71,10 @@ function Visualiser(props) {
                     Math.abs(item.coords.x) : initItem.coords.x
                 yCoord = item.coords.hasOwnProperty('y') ?
                     Math.abs(item.coords.y) : initItem.coords.y
+
+                itemConnector = item.hasOwnProperty('connector') ? item.connector : {}
             }
+
 
             return {
                 ...initItem,
@@ -81,7 +85,7 @@ function Visualiser(props) {
                 },
                 connector: {
                     ...initItem.connector,
-                    ...item.connector
+                    ...itemConnector
                 },
             }
         }
