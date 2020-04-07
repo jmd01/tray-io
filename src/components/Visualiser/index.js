@@ -3,6 +3,7 @@ import Draggable from "react-draggable"
 
 import DataTrayItem from '../DataTrayItem'
 import ConnectorList from '../ConnectorList'
+import TitleBar from '../TitleBar'
 
 import {Pane} from './styles'
 import {DataTrayItemWrap} from '../DataTrayItem/styles'
@@ -64,7 +65,7 @@ function Visualiser(props) {
             let yCoord
 
             // Consider importing lodash to reduce this by a few lines
-            if (item.hasOwnProperty('coords') && (typeof item.coords === 'object')) {
+            if (typeof item === 'object' && item.hasOwnProperty('coords') && (typeof item.coords === 'object')) {
                 xCoord = item.coords.hasOwnProperty('x') ?
                     Math.abs(item.coords.x) : initItem.coords.x
                 yCoord = item.coords.hasOwnProperty('y') ?
@@ -96,28 +97,30 @@ function Visualiser(props) {
         <>
             <h1>Visualiser</h1>
             <Pane>
-                {dataTray.map((item, i) => (
-                    <Draggable
-                        key={i}
-                        onStart={handleDragStart(i)}
-                        onStop={handleDragEnd}
-                        position={{x: 0, y: 0}} // reset position on dragend
-                    >
-                        <DataTrayItemWrap
-                            style={{
-                                left: item.coords.x,
-                                top: item.coords.y
-                            }}
+                <TitleBar />
+                <div className="inner">
+                    {dataTray.map((item, i) => (
+                        <Draggable
+                            key={i}
+                            onStart={handleDragStart(i)}
+                            onStop={handleDragEnd}
+                            position={{x: 0, y: 0}} // reset position on dragend
                         >
-                            {item.connector.name}
-                            <img src={item.connector.iconURL} alt={item.connector.name} />
-                        </DataTrayItemWrap>
-
-                    </Draggable>
-                ))}
-                {draggableDataTrayItemIndex &&
-                <DataTrayItem item={dataTray[draggableDataTrayItemIndex]} />
-                }
+                            <DataTrayItemWrap
+                                style={{
+                                    left: item.coords.x,
+                                    top: item.coords.y
+                                }}
+                            >
+                                {item.connector.name}
+                                <img src={item.connector.iconURL} alt={item.connector.name} />
+                            </DataTrayItemWrap>
+                        </Draggable>
+                    ))}
+                    {draggableDataTrayItemIndex &&
+                    <DataTrayItem item={dataTray[draggableDataTrayItemIndex]} />
+                    }
+                </div>
             </Pane>
             <ConnectorList
                 handleMouseEnter={handleMouseEnterConnectorList}
